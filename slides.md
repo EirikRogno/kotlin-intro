@@ -33,10 +33,15 @@ The last comment block of each slide will be treated as slide notes. It will be 
 * Version 1 released in 2016
 * Fully compatible with JVM
 * Widely used for Android development
-* Null safety
 * Type inference
 * Less boilerplate
 * Functional and object oriented
+---
+---
+## Null safety
+
+Bilde fra elastic på NPE i prod?
+Million dollar mistake osv.
 
 ---
 layout: center
@@ -98,8 +103,14 @@ name = "Tryg"
 ---
 layout: center
 ---
-## Functions
+## String templates
 
+---
+layout: center
+---
+## Null safety
+
+Null chaining, let?, elvis operator, smart casts, compiler errors
 ---
 layout: center
 ---
@@ -112,4 +123,51 @@ layout: center
 layout: center
 ---
 ## Inheritance
+
+Extending, overriding, abstract classes and interfaces
+
+---
+layout: center
+---
+## Companion objects
+---
+layout: center
+---
+## Functions
+
+Named params, default params, higher-order functions
+
+---
+layout: center
+---
+## Extension functions
+
+---
+layout: center
+---
+## Lambdas
+
+Default param, shorthand for lambda arguments
+
+---
+layout: center
+---
+## Collections <3
+
+Map, filter, find, group by, lambdas
+
+
+
+---
+layout: center
+---
+
+### Last part: Spring boot examples
+
+---
+layout: center
+---
+## Further resources
+
+Courses, documentation, simplest service in tip?, link to this presentation
 ---
