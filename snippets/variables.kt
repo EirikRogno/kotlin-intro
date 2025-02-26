@@ -1,0 +1,2 @@
+val name: String = "Tryg"
+
