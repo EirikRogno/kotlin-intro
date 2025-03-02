@@ -81,6 +81,7 @@ String name = "Tryg"
 ```kotlin
 // Kotlin
 val name: String = "Tryg"
+val name = "Tryg"
 ```
 </div>
 
@@ -123,8 +124,6 @@ public class Person {
   }
   
 }
-
-
 ```
 ---
 layout: center
@@ -207,7 +206,7 @@ Null chaining, let?, elvis operator, smart casts, compiler errors
 -->
 ---
 layout: center
-zoom: 1.5
+zoom: 1.2
 ---
 
 ```kotlin
@@ -239,6 +238,55 @@ Null chaining, let?, elvis operator, smart casts, compiler errors
 -->
 ---
 layout: center
+zoom: 2
+---
+<div class="mb-8">
+```java
+public String createGreeting(String name) {
+  return "Hello " + name;
+}
+```
+</div>
+
+
+
+<div>
+```kotlin
+fun createGreeting(name: String): String {
+  return "Hello $name";
+}
+
+fun createGreeting(name: String): String = "Hello $name"
+
+```
+</div>
+
+
+<!--
+Named params, default params, higher-order functions
+-->
+
+---
+layout: center
+zoom: 2
+---
+
+<div class="mb-8">
+```java
+(String x) -> System.out.println(x);
+```
+</div>
+
+<div class="mb-8">
+```kotlin
+{ x: String -> println(x) }
+{ println(it) } // Default param "it"
+```
+</div>
+
+
+---
+layout: center
 ---
 ## Inheritance
 
@@ -248,13 +296,6 @@ Extending, overriding, abstract classes and interfaces
 layout: center
 ---
 ## Companion objects
----
-layout: center
----
-## Functions
-
-Named params, default params, higher-order functions
-
 ---
 layout: center
 ---
