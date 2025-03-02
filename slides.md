@@ -93,7 +93,7 @@ layout: center
 ```kotlin
 // Kotlin
 val name: String = "Tryg"
-name = "Enter"
+name = "Enter" // Compiler error
 
 var name: String = "Enter"
 name = "Tryg"
@@ -102,23 +102,141 @@ name = "Tryg"
 
 ---
 layout: center
+zoom: 1.5
 ---
-## String templates
+```java
+public class Person {
+  private String firstName;
+  private String lastName;
+
+  public Person(String firstName, String lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+  
+  public String getFirstName() {
+    return this.firstName;
+  }
+
+  public String getLastName() {
+    return this.lastName;
+  }
+  
+}
+
+
+```
+---
+layout: center
+zoom: 2
+---
+
+```kotlin
+class Person(
+  val firstName: String,
+  val lastName: String
+)
+```
+---
+layout: center
+zoom: 2
+---
+
+```kotlin
+data class Person(
+  val firstName: String,
+  val lastName: String
+)
+```
+
+```kotlin
+val eirik = Person(firstName = "Eirik", lastName = "Rognø")
+val (firstName, lastName) = eirik
+```
+
+<!--
+Implements default toString, hashCode, copy
+
+-->
 
 ---
 layout: center
+zoom: 2
 ---
-## Null safety
 
+```kotlin
+data class Person(
+  val firstName: String,
+  val lastName: String
+)
+
+val eirik = Person(firstName = "Eirik", lastName = "Rognø")
+val greeting = "Hello ${person.firstName}!"
+// Hello Eirik!
+```
+
+---
+layout: center
+zoom: 1.5
+---
+
+```kotlin
+data class Person(
+  val firstName: String,
+  val lastName: String,
+  val adress: Adress? = null
+)
+
+data class Adress(
+  val streetName: String,
+  val number: Int?,
+  val postalCode: String?
+)
+
+val eirik = Person(firstName = "Eirik", lastName = "Rognø")
+val streetName = eirik.adress.streetName // Compiler error
+
+val streetName = eirik.adress?.streetName
+// null
+val streetName = eirik.adress?.streetName ?: "Unknown"
+// "Unknown"
+```
+
+<!--
 Null chaining, let?, elvis operator, smart casts, compiler errors
+-->
 ---
 layout: center
+zoom: 1.5
 ---
-## Classes
----
-layout: center
----
-## Data classes
+
+```kotlin
+data class Person(
+  val firstName: String,
+  val lastName: String,
+  val adress: Adress? = null
+)
+
+data class Adress(
+  val streetName: String,
+  val number: Int?,
+  val postalCode: String?
+)
+
+val eirik = Person(firstName = "Eirik", lastName = "Rognø")
+val streetName = eirik.adress.streetName // Compiler error
+
+var streetName;
+if (eirik.adress != null) { 
+  // Adress field is smart cast from Adress? to Adress
+  streetName = eirik.adress.streetName
+}
+
+```
+
+<!--
+Null chaining, let?, elvis operator, smart casts, compiler errors
+-->
 ---
 layout: center
 ---
@@ -168,6 +286,7 @@ layout: center
 layout: center
 ---
 ## Further resources
+* https://play.kotlinlang.org/byExample
 
 Courses, documentation, simplest service in tip?, link to this presentation
 ---
