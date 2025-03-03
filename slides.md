@@ -12,6 +12,7 @@ class: text-center
 drawings:
   persist: false
 # slide transition: https://sli.dev/guide/animations.html#slide-transitions
+transition: none
 # enable MDC Syntax: https://sli.dev/features/mdc
 mdc: true
 ---
@@ -146,9 +147,7 @@ data class Person(
   val firstName: String,
   val lastName: String
 )
-```
 
-```kotlin
 val eirik = Person(firstName = "Eirik", lastName = "Rognø")
 val (firstName, lastName) = eirik
 ```
@@ -183,21 +182,21 @@ zoom: 1.5
 data class Person(
   val firstName: String,
   val lastName: String,
-  val adress: Adress? = null
+  val address: Address? = null
 )
 
-data class Adress(
+data class Address(
   val streetName: String,
   val number: Int?,
   val postalCode: String?
 )
 
 val eirik = Person(firstName = "Eirik", lastName = "Rognø")
-val streetName = eirik.adress.streetName // Compiler error
+val streetName = eirik.address.streetName // Compiler error
 
-val streetName = eirik.adress?.streetName
+val streetName = eirik.address?.streetName
 // null
-val streetName = eirik.adress?.streetName ?: "Unknown"
+val streetName = eirik.address?.streetName ?: "Unknown"
 // "Unknown"
 ```
 
@@ -206,29 +205,29 @@ Null chaining, let?, elvis operator, smart casts, compiler errors
 -->
 ---
 layout: center
-zoom: 1.2
+zoom: 1.5
 ---
 
 ```kotlin
 data class Person(
   val firstName: String,
   val lastName: String,
-  val adress: Adress? = null
+  val address: Address? = null
 )
 
-data class Adress(
+data class Address(
   val streetName: String,
   val number: Int?,
   val postalCode: String?
 )
 
 val eirik = Person(firstName = "Eirik", lastName = "Rognø")
-val streetName = eirik.adress.streetName // Compiler error
+val streetName = eirik.address.streetName // Compiler error
 
 var streetName;
-if (eirik.adress != null) { 
-  // Adress field is smart cast from Adress? to Adress
-  streetName = eirik.adress.streetName
+if (eirik.address != null) { 
+  // Address field is smart cast from Address? to Address 
+  streetName = eirik.address.streetName
 }
 
 ```
@@ -287,11 +286,72 @@ zoom: 2
 
 ---
 layout: center
+zoom: 2
 ---
-## Inheritance
+
+```java
+interface Job {
+  public String getTitle();
+}
+
+class Developer implements Job {
+
+  @Override
+  public String getTitle() {
+    return "Developer";
+  }
+}
+```
+
+<!--
+Inheritance
 
 Extending, overriding, abstract classes and interfaces
+-->
 
+---
+layout: center
+zoom: 2
+---
+
+```kotlin
+interface Job {
+  fun getTitle(): String
+}
+
+class Developer : Job {
+  override fun getTitle(): String = "Developer"
+}
+```
+---
+layout: center
+zoom: 1.7
+---
+
+```kotlin
+interface Job {
+  private val workplace: String
+
+  fun getTitle(): String
+  
+  fun printWorkplace: String {
+    println(workplace)
+  }
+}
+
+class Developer(override val workplace: String = "Office") : Job {
+  override fun getTitle(): String = "Developer"
+}
+```
+
+<!--
+In kotlin interfaces can have default implementations for methods and also ,
+combining features of java abstract classes and interfaces.
+
+Abstract classes in kotlin can have fields and constructors
+
+also the syntax for "extends" and "implements" is the same, the difference is given by the type implemented
+-->
 ---
 layout: center
 ---
@@ -300,13 +360,6 @@ layout: center
 layout: center
 ---
 ## Extension functions
-
----
-layout: center
----
-## Lambdas
-
-Default param, shorthand for lambda arguments
 
 ---
 layout: center
