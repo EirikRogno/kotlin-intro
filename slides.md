@@ -50,6 +50,9 @@ island outside St. Petersburg
 The language is fully compatible with the jvm.
 You can call java code from kotlin and kotlin code from java no problem.
 
+It also has a lot of support in the java API space now, for instance spring boot has
+all the code examples in its documentation in both java and kotlin
+
 It is null safe (which I will talk more about later)
 
 It has a less verbose syntax than java, and skips a lot of the boilerplate code
@@ -450,9 +453,10 @@ class Developer implements Job {
 ```
 
 <!--
-Inheritance
+About inheritance.
 
-Extending, overriding, abstract classes and interfaces
+Here we see a simple example of inheritance in java. We have an interface called Job with one method, 
+and a class that implements that interface and overrides the method with its own implementation
 -->
 
 ---
@@ -469,6 +473,11 @@ class Developer : Job {
   override fun getTitle(): String = "Developer"
 }
 ```
+
+<!--
+The kotlin code for this is very similar, but instead of using the keyword "Implements", kotlin just has a colon
+followed by the interface it implements. Also "override" is a keyword instead of an annotation.
+-->
 ---
 layout: center
 zoom: 1.5
@@ -492,12 +501,48 @@ class Developer(override val workplace: String = "Office") : Job {
 ```
 
 <!--
-In kotlin interfaces can have default implementations for methods and also ,
-combining features of java abstract classes and interfaces.
+But beyond the most simple case there are some differences with how kotlins interfaces work.
+In kotlin interfaces can have default implementations for methods and they can also contain abstract fields,
+in many ways kotlins interface is a more powerful tool and combines features of java abstract classes and interfaces.
 
-Abstract classes in kotlin can have fields and constructors
+In kotlin you also have abstract classes and the difference here is that they can have internal state with fields, in
+addition to abstract members, as well as their own constructors.
 
-also the syntax for "extends" and "implements" is the same, the difference is given by the type implemented
+On thing to note is that the syntax for "extends" and "implements" is the same, 
+the difference is given by the type implemented
+-->
+---
+layout: center
+zoom: 1.5
+---
+
+```kotlin
+interface Job {
+    val workplace: String
+
+    fun getTitle(): String
+
+    fun printWorkplace() {
+        println(workplace)
+    }
+}
+
+class Developer(override val workplace: String = "Office") : Job {
+    override fun getTitle(): String = "Developer"
+}
+
+```
+
+<!--
+But beyond the most simple case there are some differences with how kotlins interfaces work.
+In kotlin interfaces can have default implementations for methods and they can also contain abstract fields,
+in many ways kotlins interface is a more powerful tool and combines features of java abstract classes and interfaces.
+
+In kotlin you also have abstract classes and the difference here is that they can have internal state with fields, in
+addition to abstract members, as well as their own constructors.
+
+On thing to note is that the syntax for "extends" and "implements" is the same, 
+the difference is given by the type implemented
 -->
 ---
 layout: center
@@ -517,10 +562,9 @@ strings.stream()
     .map(s -> s.toUpperCase())
     .toList();
 ```
-
-
 <!--
-Map, filter, find, group by, lambdas
+Alright, now for one of my favorite parts of kotlin. The collections api. Here we have an example of javas
+stream api, showcasing the use of filter and map.
 -->
 ---
 layout: center
@@ -542,6 +586,11 @@ strings
 ```
 
 <!--
+Here is the same code written in Kotlin, and here we see the lambdas from kotlin again. We have a list of string,
+we filter out the null values, and then we apply a mapping function to the remaining values.
+The nice thing here is that these methods are implemented directly on the collection types themselves. Meaning
+that we don't have to go through the extra hoops of the streaming API in java. We can work with the list type all the
+way through the chain.
 -->
 ---
 layout: center
@@ -563,10 +612,13 @@ strings
 ```
 
 <!--
+Some nice syntax stuff we can do with this in kotlin is that if a lamda is the only argument to a function, we 
+can skip the extra parenthesis around them. Here I have also removed the explicit parameters in the lambdas in 
+favour of the default argument.
 -->
 ---
 layout: center
-zoom: 2
+zoom: 1.7
 ---
 ```kotlin
 // Inferred type will be List<String?>
@@ -584,35 +636,17 @@ strings
 
 strings
     .mapNotNull { it?.uppercase() }
-
 ```
-
 <!--
--->
----
-layout: center
-zoom: 2
----
-```kotlin
-// Inferred type will be List<String?>
-val strings = listOf(
-  "hello",
-  "asdf",
-  "qwerty",
-  null,
-  "123"
-)
-// Inferred type of return here is List<String>
-strings
-    .filterNotNull()
-    .map { it.uppercase() }
+But one nice thing about kotlin is that it contains a whole bunch of different methods you can run on collections
+in addition to the more standard ones. In the first example here I am using a shorthand method "filterNotNull", which
+does excactly what you would expect, but as an improvement over the manual filter from last slide it also gets the
+typing correct in the map afterwards, meaning that we do not have to do the safe call when using "uppercase" anymore.
+Alternatively it also has a mapNotNull, which will first apply the mapping, and then remove all null values.
 
-strings
-    .mapNotNull { it?.uppercase() }
-
-```
-
-<!--
+You can find more info about all of these in kotlins documentation, and also the autocomplete in intelliJ comes in handy
+when working with these, I often use those suggestions to try to search for the best tool for the job when doing
+collection operations in kotlin
 -->
 ---
 layout: center
@@ -633,8 +667,9 @@ val people = listOf(
     Person("Johnny", "Fredriksen", 33),
 )
 ```
-
 <!--
+To showcase some more functions, I put together this list of Person objects. They all have a firstName, lastName
+and an age.
 -->
 ---
 layout: center
@@ -659,6 +694,9 @@ val families = people
 ```
 
 <!--
+So one thing we can do is to groupBy different fields in the objects. "groupBy" will create a map with every 
+value found in that field as key, and a list of matching Persons as value. So for instance if I where to 
+groupBy lastname like this, the result would look like the datastructure in the comment here.
 -->
 ---
 layout: center
@@ -666,15 +704,17 @@ zoom: 1.5
 ---
 ```kotlin
 
-val oldest = people.maxBy { it.age }
+val oldest = people.maxByOrNull { it.age }
 // Person(firstName=Siri, lastName=Fredriksen, age=65)
 
 val ronny = people.find { it.firstName == "Ronny" }
 // Person(firstName=Ronny, lastName=Hansen, age=64)
-// this one returns type String?
 ```
 
 <!--
+There is also several "search" functions to find either max or min of different fields, or like the second example here
+to find the first instance matching the predicate in the lambda. Both of these functions here will return a nullable type
+as there  is a chance that they don't resolve to a Person
 -->
 ---
 layout: center
@@ -719,7 +759,7 @@ fun printNumbers(numbers: List<Int>) {
 ```
 
 <!--
-Kotlin supports functional paradigms so you can just declare util functions directly
+As mentioned Kotlin supports functional paradigms so you can just declare util functions directly
 outside classes
 -->
 ---
@@ -744,33 +784,124 @@ val eirik = Person.from(mapOf(
 // Person(firstName=Eirik, lastName=Rognø)
 ```
 <!--
+But there are still situations where you want static methods inside a class.
 I like to use companion objects for instantion from other classes for instance,
-here I am again using type inference for the function return (Person), 
+Here we have a a person class again, and a companion object containing a "from"
+function that takes in a string map.
+here I am using type inference for the function return (Person), 
 and using named parameters,
-and skipping curly brackets since the function is a single statement
+as well as skipping curly brackets since the function is a single statement
+
+You can see an example here of usage.
+-->
+---
+layout: center
+zoom: 2
+---
+
+```kotlin
+val x = 2
+when (x) {
+    1 -> print("x == 1")
+    2 -> print("x == 2")
+    else -> print("x is neither 1 nor 2")
+}
+// x == 2
+```
+
+
+<!--
+I want to talk a little bit about "when" expression. When is a keyword in kotlin to create an expression that is
+most similar to Java and other languages "switch" statement. But it is both nice and more powerful, and is used
+quit a bit in kotlin code. Here we see the statement in its most basic form. We have a variable x, and do 
+some pattern matching on the value. If it matches a branch that code is run.
+-->
+---
+layout: center
+zoom: 2
+---
+
+```kotlin
+val x = 2
+val y = when (x) {
+    1 -> 1
+    2 -> 2
+    else -> null
+}
+
+when {
+    x % 2 == 0 -> println("$x is even")
+    else -> println("$x is odd")
+}
+
+
+```
+<!--
+When can also be used as an expression, here we assign a value to y based on pattern matching on the value of x.
+Used in this way as en expression the compiler will also require us to cover all branches. If I were to remove
+the "else" branch here it would trigger a compiler error.
+
+When expressions can also be called without a parameter, where it will match on expressions that resolve to true
+-->
+
+
+---
+layout: center
+zoom: 1.4
+---
+
+```kotlin
+data class Item(val name: String, val price: Float)                 
+
+data class Order(val items: Collection<Item>)  
+
+fun Order.maxPricedItemValue(): Float = this.items.maxByOrNull { it.price }?.price ?: 0F 
+fun Order.maxPricedItemName() = this.items.maxByOrNull { it.price }?.name ?: "NO_PRODUCTS"
+
+val order = Order(listOf(Item("Bread", 25.0F), Item("Wine", 29.0F), Item("Water", 12.0F)))
+
+println("Max priced item name: ${order.maxPricedItemName()}") // Max priced item name: Wine
+println("Max priced item value: ${order.maxPricedItemValue()}") // Max priced item value: 29.0
+```
+<!--
+One other thing I want to show you is the extensions functions. Kotlin has support for adding
+member functions to classes outside of the class definition itself. This is called extension functions.
+And they can be very useful, especially when doing things like making utils for external apis
+or similar, wher you don't have access to change the actual implementations.
+
+Here we have some examples. We have a class Item, that has a name and a price, and we have an
+order which contains a list of items. Then we define to extensions functions on the Order class.
+The first uses the collection api incombination with safe calls and elvis operator to return a flot that 
+signifies the value of the maxPricedItem.
+The second returns the name of the maxprices item using similar logic. On the last two lines
+you can see example of how these can be called.
 -->
 ---
 layout: center
 ---
-## WHEN
+
+# bilweb-bff demo?
 
 ---
-layout: center
+zoom: 1.5
 ---
-## Extension functions
+# Further resources
 
+- https://kotlinlang.org/docs/
+- https://play.kotlinlang.org/byExample
+- https://play.kotlinlang.org/koans/overview
+- https://kotlinlang.org/docs/jvm-get-started-spring-boot.html
+- https://spring.io/guides/tutorials/spring-boot-kotlin
 
----
-layout: center
----
+<!--
+Some links here, most of them to kotlins official docs, which I find quite good. I recommend the kotlin byExample site
+for short hands on intro to a lot  of the concepts. They also have the kotlin koans which are small tasks that
+can be done either in the browser or through an intelliJ plugin. If you wish to get started with doing something
+that is maybe familiar to you, but in a kotlin way then they have a specific guide to starting spring boot apis
+in kotlin, and spring themselves also has documentation and guide for the same.
+In our bff for bilweb 2.0 we use the openapi generator for kotlin-spring instead of java, and that is very nice.
+Gives you nullability in the models for you api when generated.
 
-### Last part: Spring boot examples
+There are of course other API frameworks available if you wish to explore that as well, but maybe that is another talk.
 
----
-layout: center
----
-## Further resources
-* https://play.kotlinlang.org/byExample
-
-Courses, documentation, simplest service in tip?, link to this presentation
----
+-->
