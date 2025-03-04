@@ -354,19 +354,189 @@ also the syntax for "extends" and "implements" is the same, the difference is gi
 -->
 ---
 layout: center
+zoom: 2
+---
+```java
+List<String> strings = Arrays.asList(
+  "hello",
+  "asdf",
+  "qwerty",
+  null,
+  "123"
+);
+
+strings.stream()
+    .filter(s -> s != null)
+    .map(s -> s.toUpperCase())
+    .toList();
+```
+
+
+<!--
+Map, filter, find, group by, lambdas
+-->
+---
+layout: center
+zoom: 2
+---
+```kotlin
+// Inferred type will be List<String?>
+val strings = listOf(
+  "hello",
+  "asdf",
+  "qwerty",
+  null,
+  "123"
+)
+
+strings
+    .filter({s -> s != null})
+    .map({s -> s?.uppercase()})
+```
+
+<!--
+-->
+---
+layout: center
+zoom: 2
+---
+```kotlin
+// Inferred type will be List<String?>
+val strings = listOf(
+  "hello",
+  "asdf",
+  "qwerty",
+  null,
+  "123"
+)
+
+strings
+    .filter { it != null }
+    .map { it?.uppercase() }
+```
+
+<!--
+-->
+---
+layout: center
+zoom: 2
+---
+```kotlin
+// Inferred type will be List<String?>
+val strings = listOf(
+  "hello",
+  "asdf",
+  "qwerty",
+  null,
+  "123"
+)
+// Inferred type of return here is List<String>
+strings
+    .filterNotNull()
+    .map { it.uppercase() }
+
+strings
+    .mapNotNull { it?.uppercase() }
+
+```
+
+<!--
+-->
+---
+layout: center
+zoom: 2
+---
+```kotlin
+// Inferred type will be List<String?>
+val strings = listOf(
+  "hello",
+  "asdf",
+  "qwerty",
+  null,
+  "123"
+)
+// Inferred type of return here is List<String>
+strings
+    .filterNotNull()
+    .map { it.uppercase() }
+
+strings
+    .mapNotNull { it?.uppercase() }
+
+```
+
+<!--
+-->
+---
+layout: center
+zoom: 2
+---
+```kotlin
+data class Person(
+    val firstName: String,
+    val lastName: String,
+    val age: Int
+)
+
+val people = listOf(
+    Person("Anders", "Hansen", 32),
+    Person("Synne", "Hansen", 30),
+    Person("Ronny", "Hansen", 64),
+    Person("Siri", "Fredriksen", 65),
+    Person("Johnny", "Fredriksen", 33),
+)
+```
+
+<!--
+-->
+---
+layout: center
+zoom: 1.5
+---
+```kotlin
+val families = people
+    .groupBy { it.lastName }
+/*
+{
+  Hansen=[
+    Person(firstName=Anders, lastName=Hansen, age=32),
+    Person(firstName=Synne, lastName=Hansen, age=30),
+    Person(firstName=Ronny, lastName=Hansen, age=64)
+  ],
+  Fredriksen=[
+    Person(firstName=Siri, lastName=Fredriksen, age=65),
+    Person(firstName=Johnny, lastName=Fredriksen, age=33)
+  ]
+}
+*/
+```
+
+<!--
+-->
+---
+layout: center
+zoom: 1.5
+---
+```kotlin
+
+val oldest = people.maxBy { it.age }
+// Person(firstName=Siri, lastName=Fredriksen, age=65)
+
+val ronny = people.find { it.firstName == "Ronny" }
+// Person(firstName=Ronny, lastName=Hansen, age=64)
+// this one returns type String?
+```
+
+<!--
+-->
+---
+layout: center
 ---
 ## Companion objects
 ---
 layout: center
 ---
 ## Extension functions
-
----
-layout: center
----
-## Collections <3
-
-Map, filter, find, group by, lambdas
 
 
 
