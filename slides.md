@@ -3,7 +3,7 @@
 theme: seriph
 # random image from a curated Unsplash collection by Anthony
 # like them? see https://unsplash.com/collections/94734566/slidev
-background: https://cover.sli.dev
+background: https://cdn.jsdelivr.net/gh/slidevjs/slidev-covers@main/static/jtsW--Z6bFw.webp
 # some information about your slides (markdown enabled)
 title: Kotlin - TeFT 2025
 # apply unocss classes to the current slide
@@ -26,23 +26,47 @@ Javas Cool younger sibling
 The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
 -->
 ---
+layout: image-right
+image: https://cdn.jsdelivr.net/gh/slidevjs/slidev-covers@main/static/aQcE3gDSSTY.webp
 ---
 # What is Kotlin
 
-* Developed by JetBrains
-* First revealed in 2011
-* Version 1 released in 2016
-* Fully compatible with JVM
-* Widely used for Android development
-* Type inference
-* Less boilerplate
-* Functional and object oriented
----
----
-## Null safety
+- First revealed in 2011
+- Originally created by JetBrains
+- Version 1 released in 2016
+- Fully compatible with JVM
+- Null safe language
+- Less boilerplate compared to Java
+- Functional and object oriented
 
-Bilde fra elastic på NPE i prod?
-Million dollar mistake osv.
+<!--
+Kotlin is a cross-platform, statically typed, general-purpose high-level programming language with type inference.
+
+It was originally created by the company JetBrains (known for IntelliJ among others)
+
+Similar to how Java shares a name with an island in Indonesia, Kotlin is named after a small
+island outside St. Petersburg
+
+The language is fully compatible with the jvm.
+
+It is null safe (which I will talk more about later)
+
+It has a less verbose syntax than java, and skips a lot of the boilerplate code
+
+It supports both functional and object oriented paradigms
+
+
+Tony Hoare who was one of the creators of the Algol W programming language, has refered to his invention of the null pointer as "The Billion dollar mistake", because of all the bugs and unintended consequences this has caused.
+-->
+
+---
+layout: image
+image: ./SN_nullpointers.PNG
+backgroundSize: contain
+---
+<!--
+Here we see a little search from SN in production for "NullPointerException" over 24 hours, 2764 instances found
+-->
 
 ---
 layout: center
@@ -56,20 +80,17 @@ fun main() {
 }
 ```
 <!--
-    fun is used to declare a function
+  Alright, time to look at some kotlin
 
-    The main() function is where your program starts from
-
-    The body of a function is written within curly braces {}
-
-    println() and print() functions print their arguments to standard output
+  fun is used to declare a function
+  The main() function is where your program starts from (simpler than javas?)
+  The body of a function is written within curly braces {}
+  println() and print() functions print their arguments to standard output
 -->
 ---
 zoom: 2
 layout: center
 ---
-### Types and variables
-
 <div class="my-8">
 ```java
 // Java
@@ -86,12 +107,19 @@ val name = "Tryg"
 ```
 </div>
 
+<!--
+variables are declared like this, using a type syntax that is quite familiar for typescrypt users with the type after a colon.
+
+Because of kotlins type inference, we can in many cases skip the explicit typing. When we assign a string to a variable, that is enough for the compiler to know that the variable is a string.
+
+If this is confusing in larger scale projects, you can turn on type hints in intelliJ, wich will show the types that are inferred in gray next to variables in your editor
+-->
+
 ---
 zoom: 2
 layout: center
 ---
 
-<div>
 ```kotlin
 // Kotlin
 val name: String = "Tryg"
@@ -100,7 +128,13 @@ name = "Enter" // Compiler error
 var name: String = "Enter"
 name = "Tryg"
 ```
-</div>
+
+<!--
+In kotlin variables can be either mutable or immutable, this is defined using either
+the val or the var keyword. If you try to reassign an immutable variable, the compiler will
+give you an error. In general it is recommended to use the immutable val keyword, unless you
+have a specific need for mutating a variable.
+-->
 
 ---
 layout: center
@@ -126,6 +160,13 @@ public class Person {
   
 }
 ```
+
+<!--
+Over to classes, here we have a basic class in Java, that defines a person, 
+with both a first and a last name. The values are initialized in the constructor,
+and have a getter each.
+
+-->
 ---
 layout: center
 zoom: 2
@@ -136,7 +177,28 @@ class Person(
   val firstName: String,
   val lastName: String
 )
+
+val eirik = Person(firstName = "Eirik", lastName = "Rognø")
+val firstName = eirik.firstName
+
+eirik.firstName = "Erik" // Compiler error
 ```
+<!--
+In kotlin you would define the class like this. We do not need any body for this class, 
+as it only contains two fields. Kotlin will provide us with a default constructor
+which you can see used under the class definition here.
+
+Note also the support for using named parameters. When specifiyng the contructor inputs in 
+this way the order does not matter. This is very useful when instanciating classes with many 
+fields or also when calling functions with several arguments. Kotlin also doesn't use the new
+keyword when calling constructors.
+
+In kotlin you don't need to creat getters and setters for your class fields, although there is also support for that if you have custom needs. 
+But for a simple data container class like this we can just access the fields on an object
+directly. And since they where declare using the "val" keyword, they are also immutable, 
+meaning that the compiler will nott allow us to reassign the values after the object has
+been created.
+-->
 ---
 layout: center
 zoom: 2
@@ -531,8 +593,77 @@ val ronny = people.find { it.firstName == "Ronny" }
 -->
 ---
 layout: center
+zoom: 1.7
 ---
-## Companion objects
+
+<div class="mb-8">
+```java
+public class Util {
+    public static void printNumbers(List<Integer> numbers) {
+      numbers.forEach(System.out::println);
+    }
+}
+
+```
+</div>
+
+<div>
+```kotlin
+class Util {
+  companion object {
+    fun printNumbers(numbers: List<Int>) {
+      numbers.forEach { println(it) }
+    }
+  }
+}
+```
+</div>
+
+<!--
+Companion objects, similar to javas static fields or static methods
+-->
+---
+layout: center
+zoom: 2
+---
+
+```kotlin
+fun printNumbers(numbers: List<Int>) {
+  numbers.forEach { println(it) }
+}
+```
+
+<!--
+Kotlin supports functional paradigms so you can just declare util functions directly
+outside classes
+-->
+---
+layout: center
+zoom: 1.7
+---
+
+```kotlin
+data class Person(val firstName: String, val lastName: String) {
+  companion object {
+    fun from(data: Map<String, String>) = Person(
+      firstName = data.getOrDefault("FirstName", "Unknown"),
+      lastName = data.getOrDefault("LastName", "Unknown"),
+    )
+  }
+}
+
+val eirik = Person.from(mapOf(
+  "FirstName" to "Eirik",
+  "LastName" to "Rognø"
+))
+// Person(firstName=Eirik, lastName=Rognø)
+```
+<!--
+I like to use companion objects for instantion from other classes for instance,
+here I am again using type inference for the function return (Person), 
+and using named parameters,
+and skipping curly brackets since the function is a single statement
+-->
 ---
 layout: center
 ---
