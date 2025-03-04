@@ -48,6 +48,7 @@ Similar to how Java shares a name with an island in Indonesia, Kotlin is named a
 island outside St. Petersburg
 
 The language is fully compatible with the jvm.
+You can call java code from kotlin and kotlin code from java no problem.
 
 It is null safe (which I will talk more about later)
 
@@ -67,6 +68,10 @@ backgroundSize: contain
 <!--
 Here we see a little search from SN in production for "NullPointerException" over 24 hours, 2764 instances found
 -->
+---
+layout: section
+---
+# Time for some code
 
 ---
 layout: center
@@ -108,7 +113,8 @@ val name = "Tryg"
 </div>
 
 <!--
-variables are declared like this, using a type syntax that is quite familiar for typescrypt users with the type after a colon.
+variables are declared like this, using a type syntax that is quite familiar for typescript 
+users with the type declared after the variable name.
 
 Because of kotlins type inference, we can in many cases skip the explicit typing. When we assign a string to a variable, that is enough for the compiler to know that the variable is a string.
 
@@ -165,7 +171,6 @@ public class Person {
 Over to classes, here we have a basic class in Java, that defines a person, 
 with both a first and a last name. The values are initialized in the constructor,
 and have a getter each.
-
 -->
 ---
 layout: center
@@ -196,7 +201,7 @@ keyword when calling constructors.
 In kotlin you don't need to creat getters and setters for your class fields, although there is also support for that if you have custom needs. 
 But for a simple data container class like this we can just access the fields on an object
 directly. And since they where declare using the "val" keyword, they are also immutable, 
-meaning that the compiler will nott allow us to reassign the values after the object has
+meaning that the compiler will not allow us to reassign the values after the object has
 been created.
 -->
 ---
@@ -212,11 +217,27 @@ data class Person(
 
 val eirik = Person(firstName = "Eirik", lastName = "Rognø")
 val (firstName, lastName) = eirik
+println(eirik)
+// Person(firstName=Eirik, lastName=Rognø)
+
+val impostor = eirik.copy(lastName = "Rognæ")
 ```
 
 <!--
-Implements default toString, hashCode, copy
 
+When creating simple classes to hold data like this, we can use the keyword "data" class.
+
+This implements several default methods that you normally need for such classes, like
+toString, hashCode/equals, copy, as well as what is known as componentN functions used for 
+destructuring member fields.
+
+Here we can see some examples of these in use, we can read firstName and lastName directly
+into to variables using destructuring. The toString method will print on the format displayed 
+in the comment line here, where as the copy function give you a new object containing all the 
+same fields, except the one you choose to override in the function call.
+
+I for instanceoften use the copy function when writing tests, making 
+it easy to change some fields before running a specific test case on some data
 -->
 
 ---
@@ -225,77 +246,100 @@ zoom: 2
 ---
 
 ```kotlin
-data class Person(
-  val firstName: String,
-  val lastName: String
-)
-
-val eirik = Person(firstName = "Eirik", lastName = "Rognø")
 val greeting = "Hello ${person.firstName}!"
 // Hello Eirik!
 ```
 
+<!--
+Here is a little nicetiy that I thought I would mention: Kotlin has support
+for string templating out of the box in normal string  like this.
+-->
+
 ---
 layout: center
 zoom: 1.5
 ---
 
 ```kotlin
-data class Person(
-  val firstName: String,
-  val lastName: String,
-  val address: Address? = null
-)
-
 data class Address(
   val streetName: String,
   val number: Int?,
   val postalCode: String?
 )
 
+data class Person(
+  val firstName: String,
+  val lastName: String,
+  val address: Address? = null
+)
+
 val eirik = Person(firstName = "Eirik", lastName = "Rognø")
 val streetName = eirik.address.streetName // Compiler error
 
-val streetName = eirik.address?.streetName
-// null
-val streetName = eirik.address?.streetName ?: "Unknown"
-// "Unknown"
+val streetName = eirik.address?.streetName // null
+val streetName = eirik.address?.streetName ?: "Unknown" // "Unknown"
 ```
 
 <!--
-Null chaining, let?, elvis operator, smart casts, compiler errors
+Okay, now for some more info about the null safety features of kotlin.
+Whenever we declare a type in Kotlin, we can declare it as either nullable, or
+non-nullable. The default is that a type is non-nullable. If we want it to be nullable
+we add a question mark after the type declariation.
+
+Here we have two data classes, one containing information about an Address, and another
+containing information about a person, including a field with type Address. The address field 
+on the Person object is a nullable type. And note also that I have added a default parameter.
+The default parameter means that you can skip this field when calling the constructor and get
+that default instead.
+
+Here I have instatiated an object of type Person. If I know try to access fields within the 
+nullable type I would get a compiler error right away screaming at me in the editor. 
+
+The closest comparison to this behaviour in java is the Optional type, but while you will get 
+warnings for accessing a value without checking if it is present, you can still ignore that 
+warning if you like. Also they are very much an opt-in feature of the language, meaning that
+you have to decide to use it everytime.
+
+So: what if I want to access the streetName field through the person object? Then I can use 
+what is known as the safe call operator where I put a question mark before the dot when 
+accessing a field. This will return null for the entire expression when address is null, 
+and only access the field if not. If you have several layers of nullable fields you can chain
+these together.
+
+Another fun operator is what is known as the elvis operator, which consists of a question mark
+and a colon. This operator means: return the expression on the right if the expression on the 
+expression on the left resolves to null. So in this case: because address field is null, the 
+entire expression will be null on the left hand side and "Unknown" is returned.
+
+One thing to note here is that for the two last lines here the type for the first is String?, 
+while the second is String without question mark, since it always will return a string.
+
 -->
 ---
 layout: center
-zoom: 1.5
+zoom: 2
 ---
 
 ```kotlin
-data class Person(
-  val firstName: String,
-  val lastName: String,
-  val address: Address? = null
-)
-
-data class Address(
-  val streetName: String,
-  val number: Int?,
-  val postalCode: String?
-)
-
-val eirik = Person(firstName = "Eirik", lastName = "Rognø")
-val streetName = eirik.address.streetName // Compiler error
-
 var streetName;
 if (eirik.address != null) { 
   // Address field is smart cast from Address? to Address 
   streetName = eirik.address.streetName
 }
 
+val streetName = eirik.address!!.streetName
 ```
-
 <!--
-Null chaining, let?, elvis operator, smart casts, compiler errors
+Another way to deal with nullable fields is to do a null check. Here Kotlin will actually smart
+cast the Address field to a non nullable type inside the if block with the null check. Making
+the direct access on the streetName field okay again.
+
+There is also a specific operator in kotlin with two exclamation marks, this operator just 
+means: throw null pointer exception if this is null. This is mostly there for very specific
+cases where you know something is not null, but the compiler doesn't. I would not recommend 
+using this as you cannot be sure that your assumptions are true or that the code surrounding 
+it will not change independently. Basically you are opting out of the built in null safety in 
+that case.
 -->
 ---
 layout: center
@@ -303,18 +347,19 @@ zoom: 2
 ---
 <div class="mb-8">
 ```java
-public String createGreeting(String name) {
-  return "Hello " + name;
+public class Greeter {
+  public static String createGreeting(String name) {
+    return "Hello " + name;
+  }
 }
 ```
 </div>
 
 
-
 <div>
 ```kotlin
 fun createGreeting(name: String): String {
-  return "Hello $name";
+  return "Hello $name"
 }
 
 fun createGreeting(name: String): String = "Hello $name"
@@ -322,9 +367,39 @@ fun createGreeting(name: String): String = "Hello $name"
 ```
 </div>
 
+<!--
+Functions! Functions in kotlin are created using the keyword "fun" which is of course
+very fun. And by default you have public fun.
+Unlike Java you can actually declare functions at the top level in a file, you do not 
+need to declare them inside a class. So the static static method in the java code
+at the top here would be equivialent just declaring the function directly like this in 
+Kotlin. If a function only contains a single expression you can omit the curly brackets
+and use an equals sign instead like this.
+-->
+---
+layout: center
+zoom: 2
+---
+
+```kotlin
+fun printGreeting(name: String): Unit {
+  println("Hello $name")
+}
+
+fun printGreeting(name: String = "World") {
+  println("Hello $name")
+}
+
+printGreeting(name = "Eirik")
+```
 
 <!--
-Named params, default params, higher-order functions
+If a function does not return anything, the return type is "Unit" which is the Kotlin 
+equivalent of void. This is also the default when declaring a function, so the return
+type can be omitted in those cases.
+
+Functions also support default parameters and being called with named parameters, just
+like the class constructors we saw earlier.
 -->
 
 ---
@@ -334,17 +409,26 @@ zoom: 2
 
 <div class="mb-8">
 ```java
-(String x) -> System.out.println(x);
+// Java
+(String x) -> {System.out.println(x);}
 ```
 </div>
 
 <div class="mb-8">
 ```kotlin
+// Kotlin
 { x: String -> println(x) }
 { println(it) } // Default param "it"
 ```
 </div>
 
+<!-- 
+Here is a comparison of java vs kotlin lambdas.
+In kotlin the paramater is specified within the curly brackets. In addition, you can
+in many cases skip the paramter, and use the implicit default parameter "it".
+This is very nice when doing things like map and filter on collections, which we 
+will get to later.
+-->
 
 ---
 layout: center
@@ -387,23 +471,24 @@ class Developer : Job {
 ```
 ---
 layout: center
-zoom: 1.7
+zoom: 1.5
 ---
 
 ```kotlin
 interface Job {
-  private val workplace: String
+    val workplace: String
 
-  fun getTitle(): String
-  
-  fun printWorkplace: String {
-    println(workplace)
-  }
+    fun getTitle(): String
+
+    fun printWorkplace() {
+        println(workplace)
+    }
 }
 
 class Developer(override val workplace: String = "Office") : Job {
-  override fun getTitle(): String = "Developer"
+    override fun getTitle(): String = "Developer"
 }
+
 ```
 
 <!--
@@ -667,8 +752,12 @@ and skipping curly brackets since the function is a single statement
 ---
 layout: center
 ---
-## Extension functions
+## WHEN
 
+---
+layout: center
+---
+## Extension functions
 
 
 ---
